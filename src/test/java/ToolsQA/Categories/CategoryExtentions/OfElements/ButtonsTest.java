@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class ButtonsTest extends TestOfElements {
-    @FindBy(id = "doubleClickBtn")
+    /*@FindBy(xpath = "//button[text()='Double Click Me']")
     WebElement doubleClickBtn;
-    @FindBy(id = "rightClickBtn")
+    @FindBy(xpath = "//button[text()='Right Click Me']")
     WebElement rightClickBtn;
-    @FindBy(id = "mjdMl")
-    WebElement simpleClick;
+    @FindBy(xpath = "//button[text()='Click Me']")
+    WebElement simpleClick;*/
 
     @FindBy(xpath = "//div[contains(@class,'col-md-6')]//div//div//button/parent::div")
     List<WebElement> buttons;
@@ -32,26 +32,29 @@ public class ButtonsTest extends TestOfElements {
     }
 
     public void buttons_test(WebDriverWait wait){
-        for (int i = 0; buttons.size() > i; i++){
+            for (int i = 0; buttons.size() > i; i++){
             Actions action = new Actions(driver);
-            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(@class,'col-md-6')]//div//div//button")));
-            if (buttons.get(i).findElement(By.id("doubleClickBtn")).isDisplayed())
-                action.doubleClick(doubleClickBtn).build().perform();
-            else if(buttons.get(i).findElement(By.id("rightClickBtn")).isDisplayed())
-                action.contextClick(rightClickBtn).build().perform();
-            else if (buttons.get(i).findElement(By.id("mjdMl")).isDisplayed())
-                simpleClick.click();
+            WebElement curBut = buttons.get(i).findElement(By.tagName("button"));
+            wait.until(ExpectedConditions.elementToBeClickable(curBut));
+            if (curBut.getText().contains("Double Click"))
+                action.doubleClick(curBut).build().perform();
+            else if(curBut.getText().contains("Right Click"))
+                action.contextClick(curBut).build().perform();
+            else if (curBut.getText().contains("Click"))
+                curBut.click();
             else{
                 System.out.println("No such button");
                 break;
             }
             wait.until(ExpectedConditions.visibilityOfAllElements(result));
             String r = result.get(i).getText();
-            String g = buttons.get(i).getText().toLowerCase(Locale.ROOT).replace(" me", "");
+            String g = curBut.getText().toLowerCase(Locale.ROOT).replace(" me", "");
             Assert.assertTrue(r.contains(g));
             System.out.println(result.get(i).getText());
 
         }
+
+
     }
 
 
